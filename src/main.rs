@@ -49,9 +49,7 @@ impl PdaCicle {
     fn add_entry(&mut self, sender: &str, receiver: &str, buff: &str) {
         let total = self.pdas.len();
 
-        let write_index = self.current_index % total;
-        println!("check current_index:{}", self.current_index);
-        println!("check write_index:{}", write_index);
+        let write_index = self.current_index;
 
         //clean (n-2) pda
         let clear_index = (self.current_index + total - 2) % total;
