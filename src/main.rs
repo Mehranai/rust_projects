@@ -49,7 +49,6 @@ impl RingManager {
     fn add_entry(&mut self, buff: &str, sender: &str, receiver: &str) {
         let total = self.pdas.len();
 
-        // شماره PDA فعلی برای نوشتن
         let write_index = self.current_index % total;
 
         // شماره PDA که باید پاک بشه (دو تا قبل‌تر)
