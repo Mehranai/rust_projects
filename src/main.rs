@@ -22,7 +22,7 @@ impl PDA {
         self.buff.clear();
         self.sender.clear();
         self.receiver.clear();
-        println!("🧹 {} cleared", self.address);
+        println!("{} cleared!", self.address);
     }
 
     fn update(&mut self, sender: &str, receiver: &str, buff: &str) {
