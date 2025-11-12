@@ -1,6 +1,6 @@
 use std::io;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 struct PDA {
     address: String,
     buff: String,
@@ -46,33 +46,32 @@ impl PdaCicle {
         }
     }
 
-    fn add_entry(&mut self, buff: &str, sender: &str, receiver: &str) {
+    fn add_entry(&mut self, sender: &str, receiver: &str, buff: &str) {
         let total = self.pdas.len();
 
         let write_index = self.current_index % total;
+        println!("check current_index:{}", self.current_index);
+        println!("check write_index:{}", write_index);
 
-        // Clear PDA (n-2) _round up
+        //clean (n-2) pda
         let clear_index = (self.current_index + total - 2) % total;
 
-        // write inside curent PDA
-        self.pdas[write_index].update(buff, sender, receiver);
+        // write on current pda
+        self.pdas[write_index].update(sender, receiver, buff);
         println!("Updated {}", self.pdas[write_index].address);
 
-        // if it passes 2 . it will remove the past ones
-        if self.current_index >= 2 {
-            self.pdas[clear_index].clear();
-            println!("Cleared {}", self.pdas[clear_index].address);
-        }
+        // clean always
+        self.pdas[clear_index].clear();
+        println!("Cleared {}", self.pdas[clear_index].address);
 
-        // go next
+        // go next pda
         self.current_index = (self.current_index + 1) % total;
     }
 
     fn show_all(&self) {
         println!("\n Current PDA States:");
         for pda in &self.pdas {
-            println!("{:?}\n", pda);
-
+            println!("{:?}", pda);
         }
     }
 }
@@ -99,16 +98,15 @@ fn main() {
         let receiver = receiver.trim();
         let buff = buff.trim();
 
+        ring.add_entry(sender, receiver, buff);
+        ring.show_all();
 
         if sender.eq_ignore_ascii_case("exit")
             || receiver.eq_ignore_ascii_case("exit")
             || buff.eq_ignore_ascii_case("exit")
         {
-            println!("Exiting...");
+            println!("Exit");
             break;
         }
-
-        ring.add_entry(sender, receiver, buff);
-        ring.show_all();
     }
 }
