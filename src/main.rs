@@ -32,12 +32,12 @@ impl PDA {
     }
 }
 
-struct RingManager {
+struct PdaCicle {
     pdas: Vec<PDA>,
     current_index: usize,
 }
 
-impl RingManager {
+impl PdaCicle {
     fn new(pda_count: u32) -> Self {
         let pdas = (0..pda_count).map(|i| PDA::new(i)).collect();
         Self {
@@ -51,34 +51,34 @@ impl RingManager {
 
         let write_index = self.current_index % total;
 
-        // شماره PDA که باید پاک بشه (دو تا قبل‌تر)
+        // Clear PDA (n-2) _round up
         let clear_index = (self.current_index + total - 2) % total;
 
-        // بنویس داخل PDA فعلی
+        // write inside curent PDA
         self.pdas[write_index].update(buff, sender, receiver);
-        println!("✍️ Updated {}", self.pdas[write_index].address);
+        println!("Updated {}", self.pdas[write_index].address);
 
-        // اگر حداقل از PDA سوم به بعدی هستیم، پاک کن دو تا قبل‌تر رو
+        // if it passes 2 . it will remove the past ones
         if self.current_index >= 2 {
             self.pdas[clear_index].clear();
-            println!("🧹 Cleared {}", self.pdas[clear_index].address);
+            println!("Cleared {}", self.pdas[clear_index].address);
         }
 
-        // برو به بعدی
+        // go next
         self.current_index = (self.current_index + 1) % total;
     }
 
     fn show_all(&self) {
-        println!("\n📦 Current PDA States:");
+        println!("\n Current PDA States:");
         for pda in &self.pdas {
-            println!("{:?}", pda);
+            println!("{:?}\n", pda);
+
         }
-        println!("----------------------------\n");
     }
 }
 
 fn main() {
-    let mut ring = RingManager::new(5); // ۵ تا PDA
+    let mut ring = PdaCicle::new(5); // ۵ تا PDA
     println!("PDA cicle started. Type input (or 'exit'):\n");
 
     loop {
@@ -99,11 +99,12 @@ fn main() {
         let receiver = receiver.trim();
         let buff = buff.trim();
 
+
         if sender.eq_ignore_ascii_case("exit")
             || receiver.eq_ignore_ascii_case("exit")
             || buff.eq_ignore_ascii_case("exit")
         {
-            println!("👋 Exiting...");
+            println!("Exiting...");
             break;
         }
 
